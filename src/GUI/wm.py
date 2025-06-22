@@ -1,7 +1,7 @@
 import customtkinter as ctk
 
 
-class FakeWindow(ctk.CTkFrame):
+class Window(ctk.CTkFrame):
     def __init__(self, parent, title="Window", width=400, height=300):
         super().__init__(parent, width=width, height=height, corner_radius=10, fg_color="#2a2a2a")
         self.place(x=100, y=100)
@@ -91,6 +91,6 @@ class WindowManager:
         self.windows = []
 
     def open_window(self, title, width, height):
-        win = FakeWindow(self.root, title=title, width=width, height=height)
+        win = Window(self.root, title=title, width=width, height=height)
         self.windows.append(win)
         return win.content  # You can pack your UI stuff into this!
