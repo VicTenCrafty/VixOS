@@ -8,8 +8,8 @@ def main():
     ctk.set_default_color_theme("blue")
 
     root = ctk.CTk()
-    root.title("VixOS Fake Machine")
-    root.geometry("800x600")
+    root.title("VixOS Emulator")
+    root.geometry("1280x720")
 
     system = Motherboard()
     system.power_on(root)

@@ -45,10 +45,21 @@ class Window(ctk.CTkFrame):
     def do_move(self, event):
         if not self._drag_start or self._maximized:
             return
+
         x_root, y_root, start_x, start_y = self._drag_start
         dx = event.x_root - x_root
         dy = event.y_root - y_root
-        self.place(x=start_x + dx, y=start_y + dy)
+
+        new_x = start_x + dx
+        new_y = start_y + dy
+
+        # Clamp to parent window
+        max_x = self._parent.winfo_width() - self.winfo_width()
+        max_y = self._parent.winfo_height() - self.winfo_height()
+        new_x = max(0, min(new_x, max_x))
+        new_y = max(0, min(new_y, max_y))
+
+        self.place(x=new_x, y=new_y)
 
     def toggle_minimize(self):
         if self._minimized:
@@ -60,7 +71,6 @@ class Window(ctk.CTkFrame):
 
     def toggle_maximize(self):
         if not self._maximized:
-            # Save original geometry
             self._original_geom.update({
                 "x": self.winfo_x(),
                 "y": self.winfo_y(),
@@ -68,12 +78,13 @@ class Window(ctk.CTkFrame):
                 "height": self.winfo_height(),
             })
 
-            # Expand to full window (relative)
+            # Force full screen position and stretch
+            self.place_forget()
             self.place(relx=0, rely=0, relwidth=1.0, relheight=1.0)
-            self.lift()  # bring to front
             self._maximized = True
+            self.lift()
         else:
-            # Go back to original fixed size
+            self.place_forget()
             self.place(
                 x=self._original_geom["x"],
                 y=self._original_geom["y"]
